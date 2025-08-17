@@ -2,7 +2,15 @@
 
 A scalable NLP system for mapping **job descriptions ↔ attribute definitions** using **Bi-Encoder retrieval** and **Cross-Encoder re-ranking**.  
 The pipeline handles **large-scale labeled datasets**, supports **multi-GPU training**, and is optimized for **restart-friendly, memory-safe training**.
+Designed and implemented a scalable Job–Attribute Matching System leveraging Bi-Encoder retrieval for speed and Cross-Encoder re-ranking for precision.
 
+Bi-Encoder pipeline: Built training data generator with spaCy-based sentence splitting, positive/negative pair sampling, and restart-safe checkpoints; trained using E5 embeddings with MultipleNegativesRankingLoss across multi-GPU infrastructure.
+
+Cross-Encoder pipeline: Fine-tuned ms-marco-MiniLM with extended 512-token input, binary classification, and mixed-precision training to capture nuanced job–attribute relationships.
+
+Retrieval Evaluation: Integrated FAISS for scalable similarity search, implemented threshold-based and top-N ranking evaluations, delivering measurable improvements in precision, recall, and F1 against golden datasets.
+
+Outcome: Delivered a modular, restart-friendly, multi-GPU pipeline capable of high-throughput training and inference, enabling accurate large-scale job–attribute classification with explainability and reproducibility.
 ---
 
 ## ⚡ Bi-Encoder Pipeline
