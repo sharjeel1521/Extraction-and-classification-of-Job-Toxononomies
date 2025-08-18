@@ -141,8 +141,6 @@ Runs **end-to-end evaluation** on Golden Dataset.
 
 ## 🔄 System Architecture (Flow Diagram)
 
-```mermaid
-
 flowchart TD
 
 %% Real-Time Job-Attribute Matching with Production Features
@@ -162,7 +160,7 @@ end
 
 subgraph CE[Cross-Encoder Pipeline]
     C1[Job Description + Candidate Attributes] --> C2[Pair Generation]
-    C2 --> C3[Train/Dev Data (512 tokens)]
+    C2 --> C3[Train/Dev Data - 512 tokens]
     C3 --> D1[Cross-Encoder Fine-Tuning / Mixed Precision]
     D1 --> D2[Trained Cross-Encoder Model]
 end
