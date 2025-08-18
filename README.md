@@ -134,33 +134,35 @@ Runs **end-to-end evaluation** on Golden Dataset.
 - **Cross-Encoder** → precise re-ranking with extended token support (512+).  
 - **Restart-friendly, streaming training** with pickle checkpoints.  
 - **Multi-GPU + Mixed Precision** → efficient training at scale.
+---
 
 flowchart TD
 
 subgraph BI[Bi-Encoder Pipeline]
     A1[Job Descriptions] --> A2[Sentence Splitting - spaCy]
-    A2 --> A3[Cleaned Sentences]
-    A3 --> A4[Positive + Negative Pair Sampling]
-    A4 --> A5[Train Data Pickle Files]
-
-    A5 --> B1[Bi-Encoder Training]
-    B1 -->|E5 Embeddings + MNRL Loss| B2[Trained Bi-Encoder Model]
-
-    B2 --> C1[Evaluation: FAISS Retrieval]
-    C1 -->|Threshold-based & Top-N| C2[Precision / Recall / F1]
+    A2 --> A3[Positive/Negative Pair Sampling]
+    A3 --> A4[Restart-Safe Checkpoints / Train Data]
+    A4 --> B1[Bi-Encoder Training with E5 Embeddings + MultipleNegativesRankingLoss]
+    B1 --> B2[Trained Bi-Encoder Model]
 end
 
 subgraph CE[Cross-Encoder Pipeline]
-    D1[Job Descriptions + Attributes] --> D2[Positive/Negative Pair Generation]
-    D2 --> D3[Train/Dev Data Pickles]
-
-    D3 --> E1[Cross-Encoder Training]
-    E1 -->|ms-marco-MiniLM, 512 tokens| E2[Trained Cross-Encoder]
-
-    E2 --> F1[Inference & Re-ranking]
-    F1 --> F2[Final Classification Scores]
+    C1[Job Descriptions + Attributes] --> C2[Pair Generation for Binary Classification]
+    C2 --> C3[Train/Dev Data with 512-token input]
+    C3 --> D1[Cross-Encoder Fine-Tuning: ms-marco-MiniLM + Mixed Precision]
+    D1 --> D2[Trained Cross-Encoder Model]
 end
 
-C2 --> G[Final Pipeline Output: Job ↔ Attribute Mapping]
-F2 --> G
+subgraph Retrieval_Eval[Retrieval & Evaluation]
+    E1[FAISS Similarity Search] --> E2[Threshold-based & Top-N Evaluation]
+    E2 --> E3[Precision / Recall / F1 Scores]
+end
+
+B2 --> E1
+D2 --> E1
+E3 --> F[Final Job ↔ Attribute Mapping Output]
+
+---
+
+
 
