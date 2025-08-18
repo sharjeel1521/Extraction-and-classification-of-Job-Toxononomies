@@ -136,6 +136,12 @@ Runs **end-to-end evaluation** on Golden Dataset.
 - **Multi-GPU + Mixed Precision** → efficient training at scale.
 ---
 
+
+
+
+## 🔄 System Architecture (Flow Diagram)
+
+```mermaid
 flowchart TD
 
 subgraph BI[Bi-Encoder Pipeline]
