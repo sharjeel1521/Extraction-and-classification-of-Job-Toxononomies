@@ -142,6 +142,7 @@ Runs **end-to-end evaluation** on Golden Dataset.
 ## 🔄 System Architecture (Flow Diagram)
 
 ```mermaid
+
 flowchart TD
 
 subgraph BI[Bi-Encoder Pipeline]
@@ -167,8 +168,3 @@ end
 B2 --> E1
 D2 --> E1
 E3 --> F[Final Job ↔ Attribute Mapping Output]
-
----
-
-
-
