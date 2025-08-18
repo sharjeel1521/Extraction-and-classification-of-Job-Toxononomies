@@ -134,6 +134,7 @@ Runs **end-to-end evaluation** on Golden Dataset.
 - **Cross-Encoder** → precise re-ranking with extended token support (512+).  
 - **Restart-friendly, streaming training** with pickle checkpoints.  
 - **Multi-GPU + Mixed Precision** → efficient training at scale.
+
 flowchart TD
 
 subgraph BI[Bi-Encoder Pipeline]
@@ -162,3 +163,4 @@ end
 
 C2 --> G[Final Pipeline Output: Job ↔ Attribute Mapping]
 F2 --> G
+
