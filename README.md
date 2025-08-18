@@ -1,15 +1,21 @@
 # 🧠 Job–Attribute Matching System (Bi-Encoder + Cross-Encoder)
 
-A scalable NLP system for mapping **job descriptions ↔ attribute definitions** using **Bi-Encoder retrieval** and **Cross-Encoder re-ranking**.  
-The pipeline handles **large-scale labeled datasets**, supports **multi-GPU training**, and is optimized for **restart-friendly, memory-safe training**.
-Designed and implemented a scalable Job–Attribute Matching System leveraging Bi-Encoder retrieval for speed and Cross-Encoder re-ranking for precision.
+At scale, matching job descriptions to their corresponding skill or attribute definitions presents a dual challenge: speed and precision. Our team designed a real-time NLP system that leverages Bi-Encoder retrieval for rapid candidate selection and Cross-Encoder re-ranking for high-fidelity mapping.
 
-Bi-Encoder pipeline: Built training data generator with spaCy-based sentence splitting, positive/negative pair sampling, and restart-safe checkpoints; trained using E5 embeddings with MultipleNegativesRankingLoss across multi-GPU infrastructure.
+Bi-Encoder Pipeline:
+We engineered a restart-safe training data generator that uses spaCy-based sentence splitting and positive/negative pair sampling. Training leveraged E5 embeddings with MultipleNegativesRankingLoss on a multi-GPU cluster, enabling rapid embedding generation while ensuring restart-friendly, memory-efficient operations.
 
-Cross-Encoder pipeline: Fine-tuned ms-marco-MiniLM with extended 512-token input, binary classification, and mixed-precision training to capture nuanced job–attribute relationships.
+Cross-Encoder Pipeline:
+To refine candidate selections, we fine-tuned ms-marco-MiniLM with an extended 512-token input for binary classification. Mixed-precision training allowed us to capture nuanced job–attribute relationships without sacrificing latency. This layer ensures that the top candidates from the Bi-Encoder are accurately re-ranked.
 
-Retrieval Evaluation: Integrated FAISS for scalable similarity search, implemented threshold-based and top-N ranking evaluations, delivering measurable improvements in precision, recall, and F1 against golden datasets.
+Real-Time Deployment:
+New job descriptions entering the system are streamed through a Kafka pipeline, connected to a feature store for pre-computed embeddings. The Bi-Encoder generates embeddings in real-time using multi-GPU acceleration, retrieves top candidates via FAISS similarity search, and the Cross-Encoder re-ranks them before final mapping.
 
+Monitoring & Feedback:
+A logging and drift monitoring layer continuously captures model feedback, detects shifts in input distributions, and triggers canary deployments for shadow traffic testing. This ensures that the system maintains high accuracy while scaling to thousands of new job postings daily.
+
+Impact & Evaluation:
+Using threshold-based and top-N evaluations on golden datasets, the system achieved measurable improvements in precision, recall, and F1, providing fast, reliable, and interpretable job–attribute mappings. This end-to-end architecture combines speed, accuracy, and robustness, enabling real-time decision-making for job matching at enterprise scale.
 Outcome: Delivered a modular, restart-friendly, multi-GPU pipeline capable of high-throughput training and inference, enabling accurate large-scale job–attribute classification with explainability and reproducibility.
 ---
 
