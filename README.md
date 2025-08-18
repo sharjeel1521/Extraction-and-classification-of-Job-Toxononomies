@@ -139,9 +139,12 @@ Runs **end-to-end evaluation** on Golden Dataset.
 
 
 
-## 🔄 System Architecture (Flow Diagram)
+```mermaid
 
 flowchart TD
+
+%% Real-Time Job-Attribute Matching with Production Features
+
 
 %% Real-Time Job-Attribute Matching with Production Features
 
