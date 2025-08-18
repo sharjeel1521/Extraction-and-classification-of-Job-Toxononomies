@@ -145,6 +145,34 @@ Runs **end-to-end evaluation** on Golden Dataset.
 
 flowchart TD
 
+
+subgraph BI[Bi-Encoder Pipeline]
+    A1[Job Descriptions] --> A2[Sentence Splitting - spaCy]
+    A2 --> A3[Positive/Negative Pair Sampling]
+    A3 --> A4[Restart-Safe Checkpoints / Train Data]
+    A4 --> B1[Multi-GPU Training Layer]
+    B1 --> B2[Bi-Encoder Training with E5 Embeddings + MultipleNegativesRankingLoss]
+    B2 --> B3[Trained Bi-Encoder Model]
+end
+
+subgraph CE[Cross-Encoder Pipeline]
+    C1[Job Descriptions + Attributes] --> C2[Pair Generation for Binary Classification]
+    C2 --> C3[Train/Dev Data with 512-token input]
+    C3 --> D1[Cross-Encoder Fine-Tuning: ms-marco-MiniLM + Mixed Precision]
+    D1 --> D2[Trained Cross-Encoder Model]
+end
+
+subgraph Retrieval_Eval[Retrieval & Evaluation]
+    E1[FAISS Similarity Search] --> E2[Threshold-based & Top-N Evaluation]
+    E2 --> E3[Precision / Recall / F1 Scores]
+end
+
+B3 --> E1
+D2 --> E1
+E3 --> F[Final Pipeline Output: Job ↔ Attribute Mapping]
+
+
+
 subgraph BI[Bi-Encoder Pipeline]
     A1[Job Descriptions] --> A2[Sentence Splitting - spaCy]
     A2 --> A3[Positive/Negative Pair Sampling]
