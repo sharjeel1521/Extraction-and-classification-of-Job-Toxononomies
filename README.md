@@ -145,54 +145,39 @@ Runs **end-to-end evaluation** on Golden Dataset.
 
 flowchart TD
 
+%% Real-Time Job-Attribute Matching with Production Features
+
+subgraph Ingestion[Real-Time Job Ingestion]
+    J1[New Job Description] --> K1[Kafka Topic / Stream]
+    K1 --> FStore[Feature Store Lookup / Update]
+end
 
 subgraph BI[Bi-Encoder Pipeline]
-    A1[Job Descriptions] --> A2[Sentence Splitting - spaCy]
-    A2 --> A3[Positive/Negative Pair Sampling]
-    A3 --> A4[Restart-Safe Checkpoints / Train Data]
-    A4 --> B1[Multi-GPU Training Layer]
-    B1 --> B2[Bi-Encoder Training with E5 Embeddings + MultipleNegativesRankingLoss]
-    B2 --> B3[Trained Bi-Encoder Model]
+    K1 --> B1[Sentence Splitting - spaCy]
+    B1 --> B2[Positive/Negative Pair Sampling]
+    B2 --> B3[Restart-Safe Checkpoints / Train Data]
+    B3 --> B4[Multi-GPU Training Layer]
+    B4 --> B5[Trained Bi-Encoder Model]
 end
 
 subgraph CE[Cross-Encoder Pipeline]
-    C1[Job Descriptions + Attributes] --> C2[Pair Generation for Binary Classification]
-    C2 --> C3[Train/Dev Data with 512-token input]
-    C3 --> D1[Cross-Encoder Fine-Tuning: ms-marco-MiniLM + Mixed Precision]
+    C1[Job Description + Candidate Attributes] --> C2[Pair Generation]
+    C2 --> C3[Train/Dev Data (512 tokens)]
+    C3 --> D1[Cross-Encoder Fine-Tuning / Mixed Precision]
     D1 --> D2[Trained Cross-Encoder Model]
 end
 
-subgraph Retrieval_Eval[Retrieval & Evaluation]
-    E1[FAISS Similarity Search] --> E2[Threshold-based & Top-N Evaluation]
-    E2 --> E3[Precision / Recall / F1 Scores]
+subgraph RealTime_Inference[Real-Time Inference]
+    K1 --> B5
+    B5 --> E1[FAISS Retrieval for Candidate Attributes]
+    D2 --> E1
+    E1 --> E2[Cross-Encoder Re-Ranking]
+    E2 --> F[Final Job ↔ Attribute Mapping]
 end
 
-B3 --> E1
-D2 --> E1
-E3 --> F[Final Pipeline Output: Job ↔ Attribute Mapping]
-
-
-
-subgraph BI[Bi-Encoder Pipeline]
-    A1[Job Descriptions] --> A2[Sentence Splitting - spaCy]
-    A2 --> A3[Positive/Negative Pair Sampling]
-    A3 --> A4[Restart-Safe Checkpoints / Train Data]
-    A4 --> B1[Bi-Encoder Training with E5 Embeddings + MultipleNegativesRankingLoss]
-    B1 --> B2[Trained Bi-Encoder Model]
+subgraph Production_Features[Production Deployment & Monitoring]
+    F --> Logger[Logger & Feedback Capture]
+    Logger --> Drift[Drift Monitoring]
+    Drift --> FStore
+    F --> Canary[Canary / Shadow Traffic Testing]
 end
-
-subgraph CE[Cross-Encoder Pipeline]
-    C1[Job Descriptions + Attributes] --> C2[Pair Generation for Binary Classification]
-    C2 --> C3[Train/Dev Data with 512-token input]
-    C3 --> D1[Cross-Encoder Fine-Tuning: ms-marco-MiniLM + Mixed Precision]
-    D1 --> D2[Trained Cross-Encoder Model]
-end
-
-subgraph Retrieval_Eval[Retrieval & Evaluation]
-    E1[FAISS Similarity Search] --> E2[Threshold-based & Top-N Evaluation]
-    E2 --> E3[Precision / Recall / F1 Scores]
-end
-
-B2 --> E1
-D2 --> E1
-E3 --> F[Final Job ↔ Attribute Mapping Output]
