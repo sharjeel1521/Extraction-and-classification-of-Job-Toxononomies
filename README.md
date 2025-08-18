@@ -17,7 +17,7 @@ A logging and drift monitoring layer continuously captures model feedback, detec
 Impact & Evaluation:
 Using threshold-based and top-N evaluations on golden datasets, the system achieved measurable improvements in precision, recall, and F1, providing fast, reliable, and interpretable job–attribute mappings. This end-to-end architecture combines speed, accuracy, and robustness, enabling real-time decision-making for job matching at enterprise scale.
 Outcome: Delivered a modular, restart-friendly, multi-GPU pipeline capable of high-throughput training and inference, enabling accurate large-scale job–attribute classification with explainability and reproducibility.
----
+
 
 ## ⚡ Bi-Encoder Pipeline
 
