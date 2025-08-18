@@ -134,15 +134,10 @@ Runs **end-to-end evaluation** on Golden Dataset.
 - **Cross-Encoder** → precise re-ranking with extended token support (512+).  
 - **Restart-friendly, streaming training** with pickle checkpoints.  
 - **Multi-GPU + Mixed Precision** → efficient training at scale.
-
-
-## 🔄 Job–Attribute Matching System (Flow Diagram)
-
-```mermaid
 flowchart TD
 
 subgraph BI[Bi-Encoder Pipeline]
-    A1[Job Descriptions] --> A2[Sentence Splitting (spaCy)]
+    A1[Job Descriptions] --> A2[Sentence Splitting - spaCy]
     A2 --> A3[Cleaned Sentences]
     A3 --> A4[Positive + Negative Pair Sampling]
     A4 --> A5[Train Data Pickle Files]
@@ -167,6 +162,3 @@ end
 
 C2 --> G[Final Pipeline Output: Job ↔ Attribute Mapping]
 F2 --> G
-
-
----
